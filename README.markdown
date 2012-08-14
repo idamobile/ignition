@@ -16,11 +16,6 @@ Ignition is split up into three sub-projects.
  * **ignition-support.** This is a standard Java library project, deployed as an ordinary JAR. It contains most of the utility classes. You can use this independently of the core module.
  * **ignition-location.** This is an Android AspectJ library project that is compiled straight into your apps. It allows your location-aware applications to always have the most recent location without the need to handle location updates within your Activity.
 
-## Changelog
-The latest version of ignition is 0.2 and was released on April 20th 2012.
-
-Go here for a [list of changes](https://github.com/kaeppler/ignition/wiki/Changelog).
-
 ## Documentation
 We decided to not write exhaustive documentation, since it would get outdated frequently. Instead, the project is documented both via [sample applications](https://github.com/kaeppler/ignition/wiki/Sample-applications) that are part of the build, as well as online JavaDoc:
 
@@ -29,7 +24,7 @@ We decided to not write exhaustive documentation, since it would get outdated fr
  * [ignition-location](http://kaeppler.github.com/ignition-docs/ignition-location/apidocs/)
 
 ## Installation
-Please refer to [Installation and setup](https://github.com/kaeppler/ignition/wiki/Installation-and-setup). We are also collecting answers to [frequently asked questions](https://github.com/kaeppler/ignition/wiki/FAQ).
+You should attach ignition-core library (it's already contais all needed dependencies in libs folder) as android library project.
 
 ## Getting help
 First, please check if your question is answered in the [FAQ](https://github.com/kaeppler/ignition/wiki/FAQ). If not, you can ask questions and get help by joining [ignition-users](https://groups.google.com/group/ignition-users) on Google Groups.
