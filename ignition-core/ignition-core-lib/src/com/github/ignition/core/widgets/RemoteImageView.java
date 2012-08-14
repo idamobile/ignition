@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -222,13 +223,12 @@ public class RemoteImageView extends ImageView {
      * Use this method to trigger the image download if you had previously set autoLoad to false.
      */
     public void loadImage() {
-        if (state != STATE_LOADING) {
-            if (imageUrl == null) {
-                throw new IllegalStateException(
-                        "image URL is null; did you forget to set it for this view?");
-            }
+        if (!TextUtils.isEmpty(imageUrl)) {
             showProgressView(true);
             imageLoader.loadImage(imageUrl, this, new DefaultImageLoaderHandler());
+        } else {
+            reset();
+            setImageBitmap(null);
         }
     }
 
@@ -238,6 +238,9 @@ public class RemoteImageView extends ImageView {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+        if (autoLoad) {
+            loadImage();
+        }
     }
 
     /**
@@ -257,6 +260,7 @@ public class RemoteImageView extends ImageView {
      */
     public void reset() {
         showProgressView(false);
+        setTag(null);
     }
 
     private void showProgressView(boolean show) {
@@ -282,8 +286,9 @@ public class RemoteImageView extends ImageView {
             boolean wasUpdated = super.handleImageLoaded(bitmap, msg);
             if (wasUpdated) {
                 state = STATE_LOADED;
-                if(listener != null)
-                	listener.onImageLoaded(bitmap);
+                if (listener != null) {
+                    listener.onImageLoaded(bitmap);
+                }
                 showProgressView(false);
             }
             return wasUpdated;
@@ -339,11 +344,11 @@ public class RemoteImageView extends ImageView {
     public View getProgressView() {
         return progressViewContainer.getChildAt(0);
     }
-    
+
     public static interface RemoteImageViewListener {
-    	public void onImageLoaded(Bitmap bm);
-    }    
-    
+        public void onImageLoaded(Bitmap bm);
+    }
+
     /**
      * Use this method to set a listener for events raised by the remote image view such as image
      * loaded.
@@ -352,6 +357,6 @@ public class RemoteImageView extends ImageView {
      * 			  an implementation of the {@link RemoteImageViewListener} interface
      */
     public void setRemoteImageViewListener(RemoteImageViewListener listener) {
-    	this.listener = listener;
+        this.listener = listener;
     }
 }
