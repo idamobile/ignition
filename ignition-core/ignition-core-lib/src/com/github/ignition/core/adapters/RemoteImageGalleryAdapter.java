@@ -128,7 +128,7 @@ public class RemoteImageGalleryAdapter extends BaseAdapter {
         if (convertView == null) {
             // create the image view
             remoteImageView = new RemoteImageView(context, null, progressDrawable, errorDrawable,
-                    false);
+                    false, true);
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(LayoutParams.FILL_PARENT,
                     LayoutParams.FILL_PARENT);
             lp.gravity = Gravity.CENTER;

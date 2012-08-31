@@ -71,6 +71,7 @@ public class RemoteImageView extends ImageView {
     private static final String ATTR_AUTO_LOAD = "autoLoad";
     private static final String ATTR_IMAGE_URL = "imageUrl";
     private static final String ATTR_ERROR_DRAWABLE = "errorDrawable";
+    private static final String ATTR_SHOW_PROGRESS_BAR = "showProgressBar";
 
     private static final int STATE_DEFAULT = 0;
     private static final int STATE_LOADED = 1;
@@ -86,6 +87,8 @@ public class RemoteImageView extends ImageView {
     private RemoteImageLoader imageLoader;
     private static RemoteImageLoader sharedImageLoader;
     private RemoteImageViewListener listener;
+
+    private boolean showProgressBar;
 
     /**
      * Use this method to inject an image loader that will be shared across all instances of this
@@ -110,7 +113,7 @@ public class RemoteImageView extends ImageView {
      */
     public RemoteImageView(Context context, String imageUrl, boolean autoLoad) {
         super(context);
-        initialize(context, imageUrl, null, null, autoLoad, null);
+        initialize(context, imageUrl, null, null, autoLoad, true, null);
     }
 
     /**
@@ -119,18 +122,19 @@ public class RemoteImageView extends ImageView {
      * @param imageUrl
      *            the URL of the image to download and show
      * @param progressDrawable
-     *            the drawable to be used for the {@link ProgressBar} which is displayed while the
-     *            image is loading
+     *            the drawable to be used for the {@link ProgressBar} which is displayed while the image is loading
      * @param errorDrawable
      *            the drawable to be used if a download error occurs
      * @param autoLoad
-     *            Whether the download should start immediately after creating the view. If set to
-     *            false, use {@link #loadImage()} to manually trigger the image download.
+     *            Whether the download should start immediately after creating the view. If set to false, use
+     *            {@link #loadImage()} to manually trigger the image download.
+     * @param showProgressBar
+     *            Whether the progress bar should be visible while loading or not
      */
     public RemoteImageView(Context context, String imageUrl, Drawable progressDrawable,
-            Drawable errorDrawable, boolean autoLoad) {
+            Drawable errorDrawable, boolean autoLoad, boolean showProgressBar) {
         super(context);
-        initialize(context, imageUrl, progressDrawable, errorDrawable, autoLoad, null);
+        initialize(context, imageUrl, progressDrawable, errorDrawable, autoLoad, showProgressBar, null);
     }
 
     public RemoteImageView(Context context, AttributeSet attributes) {
@@ -157,16 +161,19 @@ public class RemoteImageView extends ImageView {
         String imageUrl = attributes.getAttributeValue(Ignition.XMLNS, ATTR_IMAGE_URL);
         boolean autoLoad = attributes
                 .getAttributeBooleanValue(Ignition.XMLNS, ATTR_AUTO_LOAD, true);
+        boolean showProgressBar = attributes
+                .getAttributeBooleanValue(Ignition.XMLNS, ATTR_SHOW_PROGRESS_BAR, true);
 
-        initialize(context, imageUrl, progressDrawable, errorDrawable, autoLoad, attributes);
+        initialize(context, imageUrl, progressDrawable, errorDrawable, autoLoad, showProgressBar, attributes);
     }
 
     private void initialize(Context context, String imageUrl, Drawable progressDrawable,
-            Drawable errorDrawable, boolean autoLoad, AttributeSet attributes) {
+            Drawable errorDrawable, boolean autoLoad, boolean showProgressBar, AttributeSet attributes) {
         this.imageUrl = imageUrl;
         this.autoLoad = autoLoad;
         this.progressDrawable = progressDrawable;
         this.errorDrawable = errorDrawable;
+        this.showProgressBar = showProgressBar;
         if (sharedImageLoader == null) {
             this.imageLoader = new RemoteImageLoader(context);
         } else {
@@ -266,8 +273,10 @@ public class RemoteImageView extends ImageView {
     private void showProgressView(boolean show) {
         if (show) {
             state = STATE_LOADING;
-            progressViewContainer.setVisibility(View.VISIBLE);
-            setVisibility(View.INVISIBLE);
+            if (showProgressBar) {
+                progressViewContainer.setVisibility(View.VISIBLE);
+                setVisibility(View.INVISIBLE);
+            }
         } else {
             state = STATE_DEFAULT;
             progressViewContainer.setVisibility(View.INVISIBLE);
