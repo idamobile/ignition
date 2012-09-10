@@ -214,10 +214,7 @@ public class RemoteImageLoader {
                 return;
             }
             Object oldImageUrl = imageView.getTag();
-            if (imageUrl.equals(oldImageUrl)) {
-                // nothing to do
-                return;
-            } else {
+            if (!imageUrl.equals(oldImageUrl)) {
                 if (dummyDrawable != null) {
                     // Set the dummy image while waiting for the actual image to be downloaded.
                     imageView.setImageDrawable(dummyDrawable);

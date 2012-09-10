@@ -162,7 +162,7 @@ public class RemoteImageView extends ImageView {
         boolean autoLoad = attributes
                 .getAttributeBooleanValue(Ignition.XMLNS, ATTR_AUTO_LOAD, true);
         boolean showProgressBar = attributes
-                .getAttributeBooleanValue(Ignition.XMLNS, ATTR_SHOW_PROGRESS_BAR, true);
+                .getAttributeBooleanValue(Ignition.XMLNS, ATTR_SHOW_PROGRESS_BAR, false);
 
         initialize(context, imageUrl, progressDrawable, errorDrawable, autoLoad, showProgressBar, attributes);
     }
@@ -220,7 +220,9 @@ public class RemoteImageView extends ImageView {
 
             ViewGroup parent = (ViewGroup) getParent();
             int index = parent.indexOfChild(this);
-            parent.addView(progressViewContainer, index + 1);
+            if (showProgressBar) {
+                parent.addView(progressViewContainer, index + 1);
+            }
         }
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
