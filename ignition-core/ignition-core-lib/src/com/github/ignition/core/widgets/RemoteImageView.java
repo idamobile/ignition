@@ -84,6 +84,8 @@ public class RemoteImageView extends ImageView {
     private ViewGroup progressViewContainer;
     private Drawable progressDrawable, errorDrawable;
 
+    private Drawable dummyDrawable;
+
     private RemoteImageLoader imageLoader;
     private static RemoteImageLoader sharedImageLoader;
     private RemoteImageViewListener listener;
@@ -234,10 +236,14 @@ public class RemoteImageView extends ImageView {
     public void loadImage() {
         if (!TextUtils.isEmpty(imageUrl)) {
             showProgressView(true);
-            imageLoader.loadImage(imageUrl, this, new DefaultImageLoaderHandler());
+            if (dummyDrawable == null) {
+                imageLoader.loadImage(imageUrl, this, new DefaultImageLoaderHandler());
+            } else {
+                imageLoader.loadImage(imageUrl, this, dummyDrawable, new DefaultImageLoaderHandler());
+            }
         } else {
             reset();
-            setImageBitmap(null);
+            setImageDrawable(dummyDrawable);
         }
     }
 
@@ -250,6 +256,15 @@ public class RemoteImageView extends ImageView {
         if (autoLoad) {
             loadImage();
         }
+    }
+
+    /**
+     * Set dummyDrawable to show while loading or if imageUrl is empty
+     * 
+     * @param drawable
+     */
+    public void setDummyDrawable(Drawable drawable) {
+        dummyDrawable = drawable;
     }
 
     /**
@@ -345,6 +360,14 @@ public class RemoteImageView extends ImageView {
      */
     public Drawable getErrorDrawable() {
         return errorDrawable;
+    }
+
+    /**
+     * @param errorDrawable
+     *            the errorDrawable to set
+     */
+    public void setErrorDrawable(Drawable errorDrawable) {
+        this.errorDrawable = errorDrawable;
     }
 
     /**
